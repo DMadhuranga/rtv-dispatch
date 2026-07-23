@@ -374,6 +374,42 @@ Service quality
 
 ---
 
+## 5. Visualizing vehicle & passenger movements
+
+`scripts/visualize.py` reconstructs each vehicle's **timed path** (the actual road
+geometry between manifest stops, from OSRM) and turns a solved output into an animation.
+
+![vehicle movement animation](assets/sample1_demo.gif)
+
+```
+python scripts/visualize.py --input outputs/sample1_output.pkl        # both outputs
+```
+
+It writes to `viz/` in two forms (pick one with `--mode kepler|video|both`):
+
+**Video** — a self-contained MP4 (or `--format gif`) of vehicles moving along their
+routes, colored per vehicle, sized/labelled by onboard occupancy, with waiting passengers
+and a live clock. No external service needed to view it.
+
+```
+python scripts/visualize.py --input outputs/sample1_output.pkl --mode video
+# tune with --seconds, --fps, --format {mp4,gif}, --start-hour/--end-hour to clip a window
+```
+
+**[kepler.gl](https://kepler.gl)** — an interactive map with a real basemap:
+
+1. Run `--mode kepler`; it writes `viz/<name>_vehicles_trip.geojson` (animated **Trip**
+   layer) and `viz/<name>_requests.csv` (pickup/dropoff points with timestamps).
+2. Open [kepler.gl/demo](https://kepler.gl/demo) and drag both files onto the map.
+3. The GeoJSON is auto-detected as a Trip layer; press the **play** button on the time
+   slider to animate the vehicles. Add a time filter on the CSV's `time` column to animate
+   the requests alongside them.
+
+Video rendering needs `matplotlib` (in `requirements.txt`) plus `ffmpeg` for MP4 output
+(`--format gif` uses Pillow and needs no ffmpeg).
+
+---
+
 ## Set up the OSRM server
 
 ```
